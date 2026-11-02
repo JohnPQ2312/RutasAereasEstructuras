@@ -1,0 +1,26 @@
+EIF207 Estructuras de Datos - Proyecto II: Rutas aereas
+Datos de entrada (40 aeropuertos, 202 rutas)
+=========================================================
+
+aeropuertos.txt
+  Primera linea: cantidad de aeropuertos (40).
+  Cada linea siguiente:   codigo  x  y  ciudad  pais
+  Ejemplo:                SJO 464 447 San_Jose Costa_Rica
+  - x, y: posicion en pantalla para una ventana de 1000 x 1000 pixeles
+    (el origen (0,0) esta arriba a la izquierda).
+  - Los nombres usan _ en lugar de espacios.
+
+rutas.txt
+  Primera linea: cantidad de rutas (202).
+  Cada linea siguiente:   origen  destino  minutos  costo
+  Ejemplo:                SJO MIA 165 190
+  - Cada ruta es DIRIGIDA: que exista "A B" no implica que exista "B A".
+  - Si existen las dos, pueden tener valores distintos.
+  - Minutos y costo (dolares) son ficticios.
+
+mapa_referencia.png
+  Dibujo de referencia de aeropuertos y rutas en las coordenadas x, y.
+
+IMPORTANTE: el programa debe leer estos archivos; no se aceptan datos
+escritos en el codigo. En la defensa se usaran otros archivos con el
+mismo formato.
