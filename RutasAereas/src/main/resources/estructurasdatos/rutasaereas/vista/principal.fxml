@@ -10,7 +10,7 @@
 <VBox alignment="CENTER" spacing="15.0"
       xmlns="http://javafx.com/javafx/26.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="estructurasdatos.rutasaereas.PrimaryController">
+      fx:controller="estructurasdatos.rutasaereas.controlador.PrincipalController">
 
     <children>
         <Label text="Rutas aéreas"
@@ -25,6 +25,19 @@
 
         <Button text="Consultar aeropuerto"
                 onAction="#consultarAeropuerto" />
+        
+        <TextField fx:id="origenRecorrido"
+                   promptText="Código del aeropuerto de origen"
+                   maxWidth="350.0"
+                   onAction="#consultarMenosVuelos" />
+
+        <TextField fx:id="destinoRecorrido"
+                   promptText="Código del aeropuerto de destino"
+                   maxWidth="350.0"
+                   onAction="#consultarMenosVuelos" />
+
+        <Button text="Buscar recorrido con menos vuelos"
+                onAction="#consultarMenosVuelos" />
 
         <TextArea fx:id="resultadoConsulta"
                   editable="false"

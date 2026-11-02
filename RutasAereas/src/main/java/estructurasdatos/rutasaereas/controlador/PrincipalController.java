@@ -1,8 +1,10 @@
-package estructurasdatos.rutasaereas;
+package estructurasdatos.rutasaereas.controlador;
 
 import estructurasdatos.rutasaereas.modelo.Aeropuerto;
 import estructurasdatos.rutasaereas.modelo.Grafo;
 import estructurasdatos.rutasaereas.modelo.Ruta;
+import estructurasdatos.rutasaereas.algoritmos.BuscadorRutas;
+import estructurasdatos.rutasaereas.modelo.ResultadoRecorrido;
 import java.util.List;
 import java.util.Locale;
 import javafx.fxml.FXML;
@@ -10,7 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
-public class PrimaryController {
+public class PrincipalController {
 
     @FXML
     private Label estadoCarga;
@@ -21,10 +23,19 @@ public class PrimaryController {
     @FXML
     private TextArea resultadoConsulta;
 
+    @FXML
+    private TextField origenRecorrido;
+
+    @FXML
+    private TextField destinoRecorrido;
+
+    private BuscadorRutas buscador;
+
     private Grafo grafo;
 
     public void setGrafo(Grafo grafo) {
         this.grafo = grafo;
+        this.buscador = new BuscadorRutas(grafo);
 
         estadoCarga.setText(
                 "Aeropuertos: " + grafo.obtenerAeropuertos().size()
@@ -73,5 +84,49 @@ public class PrimaryController {
         }
 
         resultadoConsulta.setText(texto.toString());
+    }
+
+    @FXML
+    private void consultarMenosVuelos() {
+        String origen = origenRecorrido.getText()
+                .trim().toUpperCase(Locale.ROOT);
+
+        String destino = destinoRecorrido.getText()
+                .trim().toUpperCase(Locale.ROOT);
+
+        if (origen.isEmpty() || destino.isEmpty()) {
+            resultadoConsulta.setText(
+                    "Escribe los codigos de origen y destino.");
+            return;
+        }
+
+        try {
+            ResultadoRecorrido resultado
+                    = buscador.buscarMenosVuelos(origen, destino);
+
+            if (resultado == null) {
+                resultadoConsulta.setText(
+                        "No existe un recorrido de " + origen + " a " + destino + ".");
+                return;
+            }
+
+            StringBuilder texto = new StringBuilder();
+
+            texto.append("Criterio: menor cantidad de vuelos (BFS)\n\n");
+            texto.append("Recorrido: ")
+                    .append(String.join(" -> ", resultado.getCodigos()))
+                    .append('\n');
+            texto.append("Vuelos: ")
+                    .append(resultado.getCantidadVuelos()).append('\n');
+            texto.append("Tiempo total: ")
+                    .append(resultado.getMinutosTotales()).append(" min\n");
+            texto.append("Costo total: $")
+                    .append(resultado.getCostoTotal()).append('\n');
+
+            resultadoConsulta.setText(texto.toString());
+
+        } catch (IllegalArgumentException e) {
+            resultadoConsulta.setText(e.getMessage());
+        }
     }
 }
