@@ -5,6 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import estructurasdatos.rutasaereas.modelo.Grafo;
+import estructurasdatos.rutasaereas.persistencia.CargadorGrafo;
+import java.nio.file.Path;
 
 import java.io.IOException;
 
@@ -17,7 +20,22 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 640, 480);
+        CargadorGrafo cargador = new CargadorGrafo();
+
+        Grafo grafo = cargador.cargar(
+                Path.of("datos", "aeropuertos.txt"),
+                Path.of("datos", "rutas.txt"));
+
+        FXMLLoader loader = new FXMLLoader(
+                App.class.getResource("primary.fxml"));
+
+        Parent root = loader.load();
+
+        PrimaryController controller = loader.getController();
+        controller.setGrafo(grafo);
+
+        scene = new Scene(root, 640, 480);
+        stage.setTitle("Rutas aéreas");
         stage.setScene(scene);
         stage.show();
     }

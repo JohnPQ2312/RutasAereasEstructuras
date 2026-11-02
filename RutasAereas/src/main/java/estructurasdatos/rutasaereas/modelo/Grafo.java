@@ -60,4 +60,18 @@ public class Grafo {
 
         return List.copyOf(rutas);
     }
+
+    public List<Aeropuerto> obtenerAeropuertos() {
+        return List.copyOf(aeropuertos.values());
+    }
+
+    public int contarRutas() {
+        int total = 0;
+
+        for (List<Ruta> rutas : adyacencias.values()) {
+            total += rutas.size();
+        }
+
+        return total;
+    }
 }
