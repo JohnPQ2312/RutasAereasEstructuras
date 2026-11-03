@@ -5,6 +5,8 @@ import estructurasdatos.rutasaereas.modelo.Grafo;
 import estructurasdatos.rutasaereas.modelo.Ruta;
 import estructurasdatos.rutasaereas.algoritmos.BuscadorRutas;
 import estructurasdatos.rutasaereas.modelo.ResultadoRecorrido;
+import estructurasdatos.rutasaereas.algoritmos.CriterioPeso;
+import javafx.scene.control.ComboBox;
 import java.util.List;
 import java.util.Locale;
 import javafx.fxml.FXML;
@@ -29,9 +31,22 @@ public class PrincipalController {
     @FXML
     private TextField destinoRecorrido;
 
+    @FXML
+    private ComboBox<String> criterioRecorrido;
+
     private BuscadorRutas buscador;
 
     private Grafo grafo;
+
+    @FXML
+    private void initialize() {
+        criterioRecorrido.getItems().setAll(
+                "Menos vuelos",
+                "Menor tiempo",
+                "Menor costo");
+
+        criterioRecorrido.getSelectionModel().selectFirst();
+    }
 
     public void setGrafo(Grafo grafo) {
         this.grafo = grafo;
@@ -87,7 +102,7 @@ public class PrincipalController {
     }
 
     @FXML
-    private void consultarMenosVuelos() {
+    private void consultarRecorrido() {
         String origen = origenRecorrido.getText()
                 .trim().toUpperCase(Locale.ROOT);
 
@@ -101,8 +116,29 @@ public class PrincipalController {
         }
 
         try {
-            ResultadoRecorrido resultado
-                    = buscador.buscarMenosVuelos(origen, destino);
+            String criterio = criterioRecorrido.getValue();
+
+            if (criterio == null) {
+                resultadoConsulta.setText("Selecciona un criterio de busqueda.");
+                return;
+            }
+
+            ResultadoRecorrido resultado = switch (criterio) {
+                case "Menos vuelos" ->
+                    buscador.buscarMenosVuelos(origen, destino);
+
+                case "Menor tiempo" ->
+                    buscador.buscarMenorPeso(
+                    origen, destino, CriterioPeso.MINUTOS);
+
+                case "Menor costo" ->
+                    buscador.buscarMenorPeso(
+                    origen, destino, CriterioPeso.COSTO);
+
+                default ->
+                    throw new IllegalArgumentException(
+                            "Criterio de busqueda desconocido");
+            };
 
             if (resultado == null) {
                 resultadoConsulta.setText(
@@ -112,7 +148,7 @@ public class PrincipalController {
 
             StringBuilder texto = new StringBuilder();
 
-            texto.append("Criterio: menor cantidad de vuelos (BFS)\n\n");
+            texto.append("Criterio: ").append(criterio).append("\n\n");
             texto.append("Recorrido: ")
                     .append(String.join(" -> ", resultado.getCodigos()))
                     .append('\n');

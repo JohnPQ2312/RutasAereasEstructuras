@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" spacing="15.0"
@@ -29,15 +30,18 @@
         <TextField fx:id="origenRecorrido"
                    promptText="Código del aeropuerto de origen"
                    maxWidth="350.0"
-                   onAction="#consultarMenosVuelos" />
+                   onAction="#consultarRecorrido" />
 
         <TextField fx:id="destinoRecorrido"
                    promptText="Código del aeropuerto de destino"
                    maxWidth="350.0"
-                   onAction="#consultarMenosVuelos" />
+                   onAction="#consultarRecorrido" />
 
-        <Button text="Buscar recorrido con menos vuelos"
-                onAction="#consultarMenosVuelos" />
+        <ComboBox fx:id="criterioRecorrido"
+                  maxWidth="350.0" />
+
+        <Button text="Buscar recorrido"
+                onAction="#consultarRecorrido" />
 
         <TextArea fx:id="resultadoConsulta"
                   editable="false"
