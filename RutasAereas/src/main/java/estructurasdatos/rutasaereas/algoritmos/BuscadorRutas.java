@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.PriorityQueue;
+import java.util.Deque;
 
 public class BuscadorRutas {
 
@@ -134,6 +135,37 @@ public class BuscadorRutas {
         }
 
         return null;
+    }
+
+    public Set<String> buscarAlcanzables(String origen) {
+        if (grafo.buscarAeropuerto(origen) == null) {
+            throw new IllegalArgumentException(
+                    "No existe el aeropuerto: " + origen);
+        }
+
+        Deque<String> pendientes = new ArrayDeque<>();
+        Set<String> visitados = new HashSet<>();
+
+        pendientes.push(origen);
+
+        while (!pendientes.isEmpty()) {
+            String actual = pendientes.pop();
+
+            // Distintas conexiones pueden dejar pendiente el mismo aeropuerto.
+            if (!visitados.add(actual)) {
+                continue;
+            }
+
+            for (Ruta ruta : grafo.obtenerRutasSalientes(actual)) {
+                String vecino = ruta.getDestino();
+
+                if (!visitados.contains(vecino)) {
+                    pendientes.push(vecino);
+                }
+            }
+        }
+
+        return Set.copyOf(visitados);
     }
 
     private ResultadoRecorrido reconstruirRecorrido(

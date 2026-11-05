@@ -9,6 +9,9 @@ import estructurasdatos.rutasaereas.algoritmos.CriterioPeso;
 import javafx.scene.control.ComboBox;
 import java.util.List;
 import java.util.Locale;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -158,6 +161,70 @@ public class PrincipalController {
                     .append(resultado.getMinutosTotales()).append(" min\n");
             texto.append("Costo total: $")
                     .append(resultado.getCostoTotal()).append('\n');
+
+            resultadoConsulta.setText(texto.toString());
+
+        } catch (IllegalArgumentException e) {
+            resultadoConsulta.setText(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void consultarAlcanzables() {
+        String origen = origenRecorrido.getText()
+                .trim().toUpperCase(Locale.ROOT);
+
+        if (origen.isEmpty()) {
+            resultadoConsulta.setText(
+                    "Escribe el codigo del aeropuerto de origen.");
+            return;
+        }
+
+        try {
+            Set<String> visitados = buscador.buscarAlcanzables(origen);
+
+            List<String> alcanzables = new ArrayList<>();
+            List<String> noAlcanzables = new ArrayList<>();
+
+            for (Aeropuerto aeropuerto : grafo.obtenerAeropuertos()) {
+                String codigo = aeropuerto.getCodigo();
+
+                // El origen se muestra por separado de los destinos.
+                if (codigo.equals(origen)) {
+                    continue;
+                }
+
+                if (visitados.contains(codigo)) {
+                    alcanzables.add(codigo);
+                } else {
+                    noAlcanzables.add(codigo);
+                }
+            }
+
+            Collections.sort(alcanzables);
+            Collections.sort(noAlcanzables);
+
+            StringBuilder texto = new StringBuilder();
+
+            texto.append("Origen: ").append(origen).append("\n\n");
+
+            texto.append("Destinos alcanzables (")
+                    .append(alcanzables.size()).append("):\n");
+
+            if (alcanzables.isEmpty()) {
+                texto.append("Ninguno");
+            } else {
+                texto.append(String.join(", ", alcanzables));
+            }
+
+            texto.append("\n\nDestinos no alcanzables (")
+                    .append(noAlcanzables.size()).append("):\n");
+
+            if (noAlcanzables.isEmpty()) {
+                texto.append("Ninguno");
+            } else {
+                texto.append(String.join(", ", noAlcanzables));
+            }
 
             resultadoConsulta.setText(texto.toString());
 

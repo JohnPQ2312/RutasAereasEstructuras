@@ -42,6 +42,9 @@
 
         <Button text="Buscar recorrido"
                 onAction="#consultarRecorrido" />
+        
+        <Button text="Consultar destinos desde el origen"
+                onAction="#consultarAlcanzables" />
 
         <TextArea fx:id="resultadoConsulta"
                   editable="false"
