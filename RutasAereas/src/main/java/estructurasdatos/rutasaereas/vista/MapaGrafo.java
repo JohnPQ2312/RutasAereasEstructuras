@@ -29,6 +29,10 @@ public class MapaGrafo {
     private double ultimoY;
     private Set<String> alcanzablesMostrados;
     private String origenAlcanzabilidad;
+    private boolean avionVisible;
+    private double avionX;
+    private double avionY;
+    private double anguloAvion;
 
     public MapaGrafo(Canvas lienzo) {
         this.lienzo = lienzo;
@@ -65,6 +69,7 @@ public class MapaGrafo {
     }
 
     public void setGrafo(Grafo grafo) {
+        avionVisible = false;
         this.grafo = grafo;
         recorridoSeleccionado = null;
         codigosResaltados = Set.of();
@@ -74,6 +79,7 @@ public class MapaGrafo {
     }
 
     public void mostrarRecorrido(ResultadoRecorrido recorrido) {
+        avionVisible = false;
         alcanzablesMostrados = null;
         origenAlcanzabilidad = null;
         recorridoSeleccionado = recorrido;
@@ -88,12 +94,26 @@ public class MapaGrafo {
     }
 
     public void mostrarAlcanzables(String origen, Set<String> alcanzables) {
+        avionVisible = false;
         origenAlcanzabilidad = origen;
         alcanzablesMostrados = Set.copyOf(alcanzables);
 
         recorridoSeleccionado = null;
         codigosResaltados = Set.of();
 
+        dibujar();
+    }
+
+    public void mostrarAvion(double x, double y, double angulo) {
+        avionX = x;
+        avionY = y;
+        anguloAvion = angulo;
+        avionVisible = true;
+        dibujar();
+    }
+
+    public void ocultarAvion() {
+        avionVisible = false;
         dibujar();
     }
 
@@ -225,6 +245,38 @@ public class MapaGrafo {
             dibujarEtiqueta(
                     dibujo, aeropuerto.getCodigo(), x, y, espaciosOcupados);
         }
+
+        dibujarAvion(dibujo, escala, margenX, margenY);
+    }
+
+    private void dibujarAvion(
+            GraphicsContext dibujo,
+            double escala, double margenX, double margenY) {
+
+        if (!avionVisible) {
+            return;
+        }
+
+        double x = margenX + avionX * escala;
+        double y = margenY + avionY * escala;
+
+        dibujo.save();
+        dibujo.translate(x, y);
+        dibujo.rotate(anguloAvion);
+
+        // Figura de avion de papel orientada inicialmente hacia la derecha.
+        double[] puntosX = {12, -8, -3, -8};
+        double[] puntosY = {0, -8, 0, 8};
+
+        dibujo.setFill(Color.web("#0D47A1"));
+        dibujo.fillPolygon(puntosX, puntosY, 4);
+
+        dibujo.setStroke(Color.WHITE);
+        dibujo.setLineWidth(1.5);
+        dibujo.setLineDashes();
+        dibujo.strokePolygon(puntosX, puntosY, 4);
+
+        dibujo.restore();
     }
 
     private void dibujarRecorrido(

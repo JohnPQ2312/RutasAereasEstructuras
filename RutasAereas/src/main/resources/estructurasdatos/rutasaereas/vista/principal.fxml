@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/26.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -80,6 +81,22 @@
 
                         <Button text="Buscar recorrido"
                                 onAction="#consultarRecorrido" />
+                        
+                        <Label fx:id="estadoVuelo"
+                               text="Sin vuelo activo."
+                               wrapText="true"
+                               minHeight="65.0"
+                               maxWidth="320.0" />
+
+                        <HBox alignment="CENTER" spacing="10.0">
+                            <children>
+                                <Button text="Pausar / continuar"
+                                        onAction="#pausarOContinuarVuelo" />
+
+                                <Button text="Reiniciar vuelo"
+                                        onAction="#reiniciarVuelo" />
+                            </children>
+                        </HBox>
 
                         <Button text="Consultar destinos desde el origen"
                                 onAction="#consultarAlcanzables" />

@@ -7,6 +7,7 @@ import estructurasdatos.rutasaereas.algoritmos.BuscadorRutas;
 import estructurasdatos.rutasaereas.modelo.ResultadoRecorrido;
 import estructurasdatos.rutasaereas.algoritmos.CriterioPeso;
 import estructurasdatos.rutasaereas.vista.MapaGrafo;
+import estructurasdatos.rutasaereas.vista.AnimadorVuelo;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 import javafx.scene.control.ComboBox;
@@ -46,6 +47,11 @@ public class PrincipalController {
     @FXML
     private Canvas lienzoMapa;
 
+    @FXML
+    private Label estadoVuelo;
+
+    private AnimadorVuelo animador;
+
     private MapaGrafo mapa;
 
     private BuscadorRutas buscador;
@@ -68,9 +74,16 @@ public class PrincipalController {
     }
 
     public void setGrafo(Grafo grafo) {
+        if (animador != null) {
+            animador.detener();
+        }
+
         this.grafo = grafo;
         this.buscador = new BuscadorRutas(grafo);
+
         mapa.setGrafo(grafo);
+        animador = new AnimadorVuelo(grafo, mapa, estadoVuelo);
+
         actualizarEstadoCarga();
     }
 
@@ -87,6 +100,7 @@ public class PrincipalController {
 
     @FXML
     private void consultarAeropuerto() {
+        animador.detener();
         mapa.mostrarRecorrido(null);
 
         String codigo = codigoAeropuerto.getText()
@@ -133,6 +147,7 @@ public class PrincipalController {
 
     @FXML
     private void consultarRecorrido() {
+        animador.detener();
         mapa.mostrarRecorrido(null);
 
         String origen = origenRecorrido.getText()
@@ -193,6 +208,7 @@ public class PrincipalController {
 
             resultadoConsulta.setText(texto.toString());
             mapa.mostrarRecorrido(resultado);
+            animador.reproducir(resultado);
 
         } catch (IllegalArgumentException e) {
             resultadoConsulta.setText(e.getMessage());
@@ -201,6 +217,7 @@ public class PrincipalController {
 
     @FXML
     private void consultarAlcanzables() {
+        animador.detener();
         mapa.mostrarRecorrido(null);
 
         String origen = origenRecorrido.getText()
@@ -268,6 +285,7 @@ public class PrincipalController {
 
     @FXML
     private void cancelarRuta() {
+        animador.detener();
         String origen = origenRecorrido.getText()
                 .trim().toUpperCase(Locale.ROOT);
 
@@ -304,6 +322,7 @@ public class PrincipalController {
 
     @FXML
     private void restaurarRutas() {
+        animador.detener();
         int cantidad = grafo.restaurarRutas();
         actualizarEstadoCarga();
         mapa.mostrarRecorrido(null);
@@ -315,5 +334,15 @@ public class PrincipalController {
             resultadoConsulta.setText(
                     "Conexiones restauradas: " + cantidad);
         }
+    }
+
+    @FXML
+    private void pausarOContinuarVuelo() {
+        animador.pausarOContinuar();
+    }
+
+    @FXML
+    private void reiniciarVuelo() {
+        animador.reiniciar();
     }
 }
