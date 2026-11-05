@@ -29,7 +29,7 @@ public class App extends Application {
         PrincipalController controlador = cargadorVista.getController();
         controlador.setGrafo(grafo);
 
-        Scene escena = new Scene(raiz, 640, 650);
+        Scene escena = new Scene(raiz, 1100, 720);
 
         ventana.setTitle("Rutas aéreas");
         ventana.setScene(escena);

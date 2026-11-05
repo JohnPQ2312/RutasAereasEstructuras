@@ -2,8 +2,10 @@ package estructurasdatos.rutasaereas.modelo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Grafo {
 
@@ -93,6 +95,26 @@ public class Grafo {
         }
 
         return List.copyOf(rutas);
+    }
+
+    public List<Ruta> obtenerRutasCanceladas(String codigo) {
+        List<Ruta> originales = rutasOriginales.get(codigo);
+
+        if (originales == null) {
+            throw new IllegalArgumentException(
+                    "No existe el aeropuerto: " + codigo);
+        }
+
+        Set<Ruta> activas = new HashSet<>(adyacencias.get(codigo));
+        List<Ruta> canceladas = new ArrayList<>();
+
+        for (Ruta ruta : originales) {
+            if (!activas.contains(ruta)) {
+                canceladas.add(ruta);
+            }
+        }
+
+        return List.copyOf(canceladas);
     }
 
     public List<Aeropuerto> obtenerAeropuertos() {

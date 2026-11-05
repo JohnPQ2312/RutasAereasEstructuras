@@ -1,65 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="15.0"
-      xmlns="http://javafx.com/javafx/26.0.1"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="estructurasdatos.rutasaereas.controlador.PrincipalController">
+<BorderPane xmlns="http://javafx.com/javafx/26.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="estructurasdatos.rutasaereas.controlador.PrincipalController">
 
-    <children>
-        <Label text="Rutas aéreas"
-               style="-fx-font-size: 24px;" />
+    <center>
+        <Pane fx:id="contenedorMapa"
+              minWidth="0.0"
+              minHeight="0.0">
+            <children>
+                <Canvas fx:id="lienzoMapa" managed="false" />
+            </children>
+        </Pane>
+    </center>
 
-        <Label fx:id="estadoCarga" text="Datos pendientes" />
+    <right>
+        <ScrollPane fitToWidth="true"
+                    prefWidth="360.0"
+                    hbarPolicy="NEVER">
+            <content>
+                <VBox alignment="TOP_CENTER" spacing="10.0">
+                    <padding>
+                        <Insets top="15.0" right="15.0"
+                                bottom="15.0" left="15.0" />
+                    </padding>
 
-        <TextField fx:id="codigoAeropuerto"
-                   promptText="Código del aeropuerto, por ejemplo SJO"
-                   maxWidth="350.0"
-                   onAction="#consultarAeropuerto" />
+                    <children>
+                        <Label text="Rutas aéreas"
+                               style="-fx-font-size: 24px;" />
 
-        <Button text="Consultar aeropuerto"
-                onAction="#consultarAeropuerto" />
-        
-        <TextField fx:id="origenRecorrido"
-                   promptText="Código del aeropuerto de origen"
-                   maxWidth="350.0"
-                   onAction="#consultarRecorrido" />
+                        <Label fx:id="estadoCarga"
+                               text="Datos pendientes" />
 
-        <TextField fx:id="destinoRecorrido"
-                   promptText="Código del aeropuerto de destino"
-                   maxWidth="350.0"
-                   onAction="#consultarRecorrido" />
+                        <Label text="Rueda sobre el mapa: zoom. Arrastrar: mover."
+                               wrapText="true"
+                               maxWidth="320.0" />
 
-        <ComboBox fx:id="criterioRecorrido"
-                  maxWidth="350.0" />
+                        <Button text="Restablecer vista"
+                                onAction="#restablecerMapa" />
 
-        <Button text="Buscar recorrido"
-                onAction="#consultarRecorrido" />
-        
-        <Button text="Consultar destinos desde el origen"
-                onAction="#consultarAlcanzables" />
-        
-        <Button text="Cancelar conexión de origen a destino"
-                onAction="#cancelarRuta" />
+                        <Label text="Rojo discontinuo: conexión cancelada."
+                               style="-fx-text-fill: #C62828;"
+                               wrapText="true"
+                               maxWidth="320.0" />
+                        
+                        <Label text="Puntos: verde alcanzable, rojo inalcanzable, morado origen."
+                               wrapText="true"
+                               maxWidth="320.0" />
 
-        <Button text="Restaurar todas las rutas"
-                onAction="#restaurarRutas" />
+                        <TextField fx:id="codigoAeropuerto"
+                                   promptText="Código del aeropuerto, por ejemplo SJO"
+                                   onAction="#consultarAeropuerto" />
 
-        <TextArea fx:id="resultadoConsulta"
-                  editable="false"
-                  wrapText="true"
-                  VBox.vgrow="ALWAYS" />
-    </children>
+                        <Button text="Consultar aeropuerto"
+                                onAction="#consultarAeropuerto" />
 
-    <padding>
-        <Insets bottom="20.0" left="20.0"
-                right="20.0" top="20.0" />
-    </padding>
-</VBox>
+                        <TextField fx:id="origenRecorrido"
+                                   promptText="Código del aeropuerto de origen"
+                                   onAction="#consultarRecorrido" />
+
+                        <TextField fx:id="destinoRecorrido"
+                                   promptText="Código del aeropuerto de destino"
+                                   onAction="#consultarRecorrido" />
+
+                        <ComboBox fx:id="criterioRecorrido"
+                                  maxWidth="350.0" />
+
+                        <Button text="Buscar recorrido"
+                                onAction="#consultarRecorrido" />
+
+                        <Button text="Consultar destinos desde el origen"
+                                onAction="#consultarAlcanzables" />
+
+                        <Button text="Cancelar conexión directa"
+                                onAction="#cancelarRuta" />
+
+                        <Button text="Restaurar todas las rutas"
+                                onAction="#restaurarRutas" />
+
+                        <TextArea fx:id="resultadoConsulta"
+                                  editable="false"
+                                  wrapText="true"
+                                  minHeight="180.0"
+                                  prefRowCount="10" />
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </right>
+
+</BorderPane>

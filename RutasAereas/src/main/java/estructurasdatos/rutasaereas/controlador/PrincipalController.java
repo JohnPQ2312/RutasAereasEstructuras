@@ -6,6 +6,9 @@ import estructurasdatos.rutasaereas.modelo.Ruta;
 import estructurasdatos.rutasaereas.algoritmos.BuscadorRutas;
 import estructurasdatos.rutasaereas.modelo.ResultadoRecorrido;
 import estructurasdatos.rutasaereas.algoritmos.CriterioPeso;
+import estructurasdatos.rutasaereas.vista.MapaGrafo;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.Pane;
 import javafx.scene.control.ComboBox;
 import java.util.List;
 import java.util.Locale;
@@ -37,6 +40,14 @@ public class PrincipalController {
     @FXML
     private ComboBox<String> criterioRecorrido;
 
+    @FXML
+    private Pane contenedorMapa;
+
+    @FXML
+    private Canvas lienzoMapa;
+
+    private MapaGrafo mapa;
+
     private BuscadorRutas buscador;
 
     private Grafo grafo;
@@ -49,12 +60,23 @@ public class PrincipalController {
                 "Menor costo");
 
         criterioRecorrido.getSelectionModel().selectFirst();
+
+        mapa = new MapaGrafo(lienzoMapa);
+
+        lienzoMapa.widthProperty().bind(contenedorMapa.widthProperty());
+        lienzoMapa.heightProperty().bind(contenedorMapa.heightProperty());
     }
 
     public void setGrafo(Grafo grafo) {
         this.grafo = grafo;
         this.buscador = new BuscadorRutas(grafo);
+        mapa.setGrafo(grafo);
         actualizarEstadoCarga();
+    }
+
+    @FXML
+    private void restablecerMapa() {
+        mapa.restablecerVista();
     }
 
     private void actualizarEstadoCarga() {
@@ -65,6 +87,8 @@ public class PrincipalController {
 
     @FXML
     private void consultarAeropuerto() {
+        mapa.mostrarRecorrido(null);
+
         String codigo = codigoAeropuerto.getText()
                 .trim().toUpperCase(Locale.ROOT);
 
@@ -109,6 +133,8 @@ public class PrincipalController {
 
     @FXML
     private void consultarRecorrido() {
+        mapa.mostrarRecorrido(null);
+
         String origen = origenRecorrido.getText()
                 .trim().toUpperCase(Locale.ROOT);
 
@@ -166,6 +192,7 @@ public class PrincipalController {
                     .append(resultado.getCostoTotal()).append('\n');
 
             resultadoConsulta.setText(texto.toString());
+            mapa.mostrarRecorrido(resultado);
 
         } catch (IllegalArgumentException e) {
             resultadoConsulta.setText(e.getMessage());
@@ -174,6 +201,8 @@ public class PrincipalController {
 
     @FXML
     private void consultarAlcanzables() {
+        mapa.mostrarRecorrido(null);
+
         String origen = origenRecorrido.getText()
                 .trim().toUpperCase(Locale.ROOT);
 
@@ -230,6 +259,7 @@ public class PrincipalController {
             }
 
             resultadoConsulta.setText(texto.toString());
+            mapa.mostrarAlcanzables(origen, visitados);
 
         } catch (IllegalArgumentException e) {
             resultadoConsulta.setText(e.getMessage());
@@ -253,15 +283,18 @@ public class PrincipalController {
         try {
             int cantidad = grafo.cancelarRuta(origen, destino);
             actualizarEstadoCarga();
+            mapa.mostrarRecorrido(null);
 
             if (cantidad == 0) {
                 resultadoConsulta.setText(
-                        "No existe una conexion activa de "
-                        + origen + " a " + destino + ".");
+                        "No existe una conexion directa activa de "
+                        + origen + " a " + destino + "."
+                        + "\nPara un recorrido con escalas, indica uno de sus tramos.");
             } else {
                 resultadoConsulta.setText(
-                        "Conexiones canceladas: " + cantidad
-                        + "\n" + origen + " -> " + destino);
+                        "Conexiones directas canceladas: " + cantidad
+                        + "\n" + origen + " -> " + destino
+                        + "\nLa cancelacion afecta solo esa direccion.");
             }
 
         } catch (IllegalArgumentException e) {
@@ -273,6 +306,7 @@ public class PrincipalController {
     private void restaurarRutas() {
         int cantidad = grafo.restaurarRutas();
         actualizarEstadoCarga();
+        mapa.mostrarRecorrido(null);
 
         if (cantidad == 0) {
             resultadoConsulta.setText(
