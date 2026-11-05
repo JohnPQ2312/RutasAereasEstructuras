@@ -45,6 +45,12 @@
         
         <Button text="Consultar destinos desde el origen"
                 onAction="#consultarAlcanzables" />
+        
+        <Button text="Cancelar conexión de origen a destino"
+                onAction="#cancelarRuta" />
+
+        <Button text="Restaurar todas las rutas"
+                onAction="#restaurarRutas" />
 
         <TextArea fx:id="resultadoConsulta"
                   editable="false"

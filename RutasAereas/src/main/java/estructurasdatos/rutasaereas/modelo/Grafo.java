@@ -9,6 +9,7 @@ public class Grafo {
 
     private final Map<String, Aeropuerto> aeropuertos = new HashMap<>();
     private final Map<String, List<Ruta>> adyacencias = new HashMap<>();
+    private final Map<String, List<Ruta>> rutasOriginales = new HashMap<>();
 
     public void agregarAeropuerto(Aeropuerto aeropuerto) {
         String codigo = aeropuerto.getCodigo();
@@ -19,6 +20,7 @@ public class Grafo {
         }
 
         aeropuertos.put(codigo, aeropuerto);
+        rutasOriginales.put(codigo, new ArrayList<>());
 
         // Cada vertice tiene su lista, aunque no tenga rutas salientes.
         adyacencias.put(codigo, new ArrayList<>());
@@ -48,6 +50,38 @@ public class Grafo {
 
         Ruta ruta = new Ruta(destino, minutos, costo);
         adyacencias.get(origen).add(ruta);
+        rutasOriginales.get(origen).add(ruta);
+    }
+
+    public int cancelarRuta(String origen, String destino) {
+        if (!aeropuertos.containsKey(origen)
+                || !aeropuertos.containsKey(destino)) {
+            throw new IllegalArgumentException(
+                    "El aeropuerto de origen o destino no existe");
+        }
+
+        List<Ruta> rutas = adyacencias.get(origen);
+        int cantidadAnterior = rutas.size();
+
+        rutas.removeIf(ruta -> ruta.getDestino().equals(destino));
+
+        return cantidadAnterior - rutas.size();
+    }
+
+    public int restaurarRutas() {
+        int cantidadRestaurada = 0;
+
+        for (String codigo : aeropuertos.keySet()) {
+            List<Ruta> activas = adyacencias.get(codigo);
+            List<Ruta> originales = rutasOriginales.get(codigo);
+
+            cantidadRestaurada += originales.size() - activas.size();
+
+            activas.clear();
+            activas.addAll(originales);
+        }
+
+        return cantidadRestaurada;
     }
 
     public List<Ruta> obtenerRutasSalientes(String codigo) {

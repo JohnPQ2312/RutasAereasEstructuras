@@ -54,7 +54,10 @@ public class PrincipalController {
     public void setGrafo(Grafo grafo) {
         this.grafo = grafo;
         this.buscador = new BuscadorRutas(grafo);
+        actualizarEstadoCarga();
+    }
 
+    private void actualizarEstadoCarga() {
         estadoCarga.setText(
                 "Aeropuertos: " + grafo.obtenerAeropuertos().size()
                 + " | Rutas: " + grafo.contarRutas());
@@ -230,6 +233,53 @@ public class PrincipalController {
 
         } catch (IllegalArgumentException e) {
             resultadoConsulta.setText(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void cancelarRuta() {
+        String origen = origenRecorrido.getText()
+                .trim().toUpperCase(Locale.ROOT);
+
+        String destino = destinoRecorrido.getText()
+                .trim().toUpperCase(Locale.ROOT);
+
+        if (origen.isEmpty() || destino.isEmpty()) {
+            resultadoConsulta.setText(
+                    "Escribe los codigos de origen y destino.");
+            return;
+        }
+
+        try {
+            int cantidad = grafo.cancelarRuta(origen, destino);
+            actualizarEstadoCarga();
+
+            if (cantidad == 0) {
+                resultadoConsulta.setText(
+                        "No existe una conexion activa de "
+                        + origen + " a " + destino + ".");
+            } else {
+                resultadoConsulta.setText(
+                        "Conexiones canceladas: " + cantidad
+                        + "\n" + origen + " -> " + destino);
+            }
+
+        } catch (IllegalArgumentException e) {
+            resultadoConsulta.setText(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void restaurarRutas() {
+        int cantidad = grafo.restaurarRutas();
+        actualizarEstadoCarga();
+
+        if (cantidad == 0) {
+            resultadoConsulta.setText(
+                    "No hay rutas canceladas para restaurar.");
+        } else {
+            resultadoConsulta.setText(
+                    "Conexiones restauradas: " + cantidad);
         }
     }
 }
