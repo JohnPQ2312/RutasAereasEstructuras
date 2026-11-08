@@ -1,0 +1,7 @@
+6
+PUE 100 100 Ciudad_PUE Pais_Prueba
+ALT 400 100 Ciudad_ALT Pais_Prueba
+HUB 400 400 Ciudad_HUB Pais_Prueba
+RAM 700 400 Ciudad_RAM Pais_Prueba
+FIN 900 750 Ciudad_FIN Pais_Prueba
+ISO 100 900 Ciudad_ISO Pais_Prueba

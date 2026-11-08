@@ -1,0 +1,13 @@
+12
+CAA 80 100 Ciudad_CAA Pais_Prueba
+CAB 360 100 Ciudad_CAB Pais_Prueba
+CAC 640 100 Ciudad_CAC Pais_Prueba
+CAD 920 100 Ciudad_CAD Pais_Prueba
+CAE 80 480 Ciudad_CAE Pais_Prueba
+CAF 360 480 Ciudad_CAF Pais_Prueba
+CAG 640 480 Ciudad_CAG Pais_Prueba
+CAH 920 480 Ciudad_CAH Pais_Prueba
+CAI 80 860 Ciudad_CAI Pais_Prueba
+CAJ 360 860 Ciudad_CAJ Pais_Prueba
+CAK 640 860 Ciudad_CAK Pais_Prueba
+CAL 920 860 Ciudad_CAL Pais_Prueba

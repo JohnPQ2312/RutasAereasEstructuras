@@ -1,0 +1,21 @@
+Resumen de verificación asistida de la interfaz
+
+Resultados del conjunto de pruebas realizado el 5 de noviembre de 2026 con asistencia de IA. La primera parte corresponde a comprobaciones automáticas con la vista, el controlador y el animador del programa. La segunda recoge lo observado en la ventana. Se presentan como verificaciones asistidas, no como ejecuciones manuales del estudiante.
+
+OK interfaz: 01_criterios_distintos | tres criterios, totales, animación, consulta, DFS y validación.
+OK interfaz: 02_sentidos_ciclos_componentes | tres criterios, totales, animación, consulta, DFS y validación.
+OK interfaz: 03_cancelacion_puente | tres criterios, totales, animación, consulta, DFS y validación.
+OK interfaz: 04_pesos_cero_empates | tres criterios, totales, animación, consulta, DFS y validación.
+OK interfaz: 05_aeropuerto_unico | tres criterios, totales, animación, consulta, DFS y validación.
+OK interfaz: 06_mapa_limites | tres criterios, totales, animación, consulta, DFS y validación.
+OK interfaz: 07_cadena_larga | tres criterios, totales, animación, consulta, DFS y validación.
+OK interfaz: 08_varios_sin_rutas | tres criterios, totales, animación, consulta, DFS y validación.
+OK interfaz: cancelación del puente, tres búsquedas inalcanzables y restauración con animación.
+RESULTADO: 190 comprobaciones de integración correctas con los ocho conjuntos.
+Las animaciones largas se aceleraron solo en el programa auxiliar de pruebas; el programa conserva tres segundos por vuelo.
+
+Inspección visual asistida de la ventana en ese conjunto de pruebas:
+- 01_criterios_distintos: AAA -> FFF con BFS (300 min, $900), menor tiempo por BBB (60 min, $800) y menor costo por CCC y DDD (180 min, $150); recorridos y avion visibles.
+- 06_mapa_limites: cuatro esquinas y etiquetas cercanas visibles; vuelo CEN -> CES completado con un vuelo, 0 min y $0.
+- Los otros seis conjuntos se comprobaron mediante integración automática, sin inspección visual individual.
+- Copia independiente compilada y ejecutada mediante Maven.

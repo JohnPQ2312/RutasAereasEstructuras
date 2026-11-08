@@ -1,0 +1,7 @@
+6
+NWN 0 0 Ciudad_NWN Pais_Prueba
+NEN 1000 0 Ciudad_NEN Pais_Prueba
+CES 490 500 Ciudad_CES Pais_Prueba
+CEN 510 500 Ciudad_CEN Pais_Prueba
+SWN 0 1000 Ciudad_SWN Pais_Prueba
+SEN 1000 1000 Ciudad_SEN Pais_Prueba

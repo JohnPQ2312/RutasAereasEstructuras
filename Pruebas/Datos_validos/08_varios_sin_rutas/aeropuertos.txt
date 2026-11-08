@@ -1,0 +1,4 @@
+3
+WES 350 200 Ciudad_WES Pais_Prueba
+MID 650 500 Ciudad_MID Pais_Prueba
+EAS 350 800 Ciudad_EAS Pais_Prueba

@@ -1,0 +1,28 @@
+Resumen de verificación asistida de carga y lógica
+
+Resultados del conjunto de pruebas realizado el 5 de noviembre de 2026. Las comprobaciones se realizaron con asistencia de IA mediante programas auxiliares externos al código de la aplicación. Este documento resume sus resultados y alcance; no se atribuye a ejecuciones manuales del estudiante.
+
+Cada consulta combina un origen, un destino y uno de los tres criterios. Por eso las cantidades incluyen los tres criterios y los casos donde origen y destino coinciden. El total de 8002 comprobaciones incluye varias verificaciones por consulta, como revisar los tramos y los totales. No representa 8002 consultas ni 8002 acciones manuales.
+
+OK: 01_criterios_distintos | aeropuertos=6 | rutas=10 | consultas=108
+OK: 02_sentidos_ciclos_componentes | aeropuertos=7 | rutas=8 | consultas=147
+OK: 03_cancelacion_puente | aeropuertos=6 | rutas=7 | consultas=108
+OK: 04_pesos_cero_empates | aeropuertos=5 | rutas=8 | consultas=75
+OK: 05_aeropuerto_unico | aeropuertos=1 | rutas=0 | consultas=3
+OK: 06_mapa_limites | aeropuertos=6 | rutas=6 | consultas=108
+OK: 07_cadena_larga | aeropuertos=12 | rutas=11 | consultas=432
+OK: 08_varios_sin_rutas | aeropuertos=3 | rutas=0 | consultas=27
+OK: puente, alternativa, dos cancelaciones simultáneas y restauración.
+OK: rechazo de 01_codigo_duplicado
+OK: rechazo de 02_destino_inexistente
+OK: rechazo de 03_minutos_negativos
+OK: rechazo de 04_costo_negativo
+OK: rechazo de 05_falta_aeropuerto
+OK: rechazo de 06_falta_ruta
+OK: rechazo de 07_sobra_aeropuerto
+OK: rechazo de 08_sobra_ruta
+OK: rechazo de 09_minutos_no_numericos
+OK: rechazo de 10_cantidad_negativa
+RESULTADO: 1008 consultas comparadas con resultados de un verificador auxiliar independiente; 46 consultas DFS; 50 conexiones canceladas y restauradas por separado; 10 conjuntos inválidos rechazados.
+Comprobaciones correctas: 8002
+Alcance de este archivo: carga y lógica. Las comprobaciones de la interfaz y su inspección visual se resumen por separado en Resultado_integracion.txt.

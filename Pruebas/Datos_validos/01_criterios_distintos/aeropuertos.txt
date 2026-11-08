@@ -1,0 +1,7 @@
+6
+AAA 120 180 Ciudad_AAA Pais_Prueba
+BBB 430 80 Ciudad_BBB Pais_Prueba
+CCC 220 450 Ciudad_CCC Pais_Prueba
+DDD 500 550 Ciudad_DDD Pais_Prueba
+EEE 720 450 Ciudad_EEE Pais_Prueba
+FFF 850 180 Ciudad_FFF Pais_Prueba

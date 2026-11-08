@@ -1,0 +1,6 @@
+5
+ZER 100 500 Ciudad_ZER Pais_Prueba
+UNO 350 200 Ciudad_UNO Pais_Prueba
+DOS 350 800 Ciudad_DOS Pais_Prueba
+TRE 650 500 Ciudad_TRE Pais_Prueba
+FIN 900 500 Ciudad_FIN Pais_Prueba

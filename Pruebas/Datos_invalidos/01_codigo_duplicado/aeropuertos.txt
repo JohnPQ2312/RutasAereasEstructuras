@@ -1,0 +1,4 @@
+3
+AAA 100 100 Ciudad_AAA Pais_Prueba
+BBB 900 900 Ciudad_BBB Pais_Prueba
+AAA 500 500 Ciudad_Repetida Pais_Prueba

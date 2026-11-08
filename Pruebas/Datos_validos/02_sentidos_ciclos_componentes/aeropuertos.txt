@@ -1,0 +1,8 @@
+7
+NTE 150 120 Ciudad_NTE Pais_Prueba
+SUR 250 800 Ciudad_SUR Pais_Prueba
+EST 850 450 Ciudad_EST Pais_Prueba
+OES 100 450 Ciudad_OES Pais_Prueba
+ISL 820 120 Ciudad_ISL Pais_Prueba
+SOL 500 150 Ciudad_SOL Pais_Prueba
+FIN 500 900 Ciudad_FIN Pais_Prueba
