@@ -5,117 +5,232 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
 
 <BorderPane xmlns="http://javafx.com/javafx/26.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="estructurasdatos.rutasaereas.controlador.PrincipalController">
+            fx:controller="estructurasdatos.rutasaereas.controlador.PrincipalController"
+            styleClass="app-root"
+            stylesheets="@principal.css">
 
-    <center>
-        <Pane fx:id="contenedorMapa"
-              minWidth="0.0"
-              minHeight="0.0">
-            <children>
-                <Canvas fx:id="lienzoMapa" managed="false" />
-            </children>
-        </Pane>
-    </center>
-
-    <right>
-        <ScrollPane fitToWidth="true"
-                    prefWidth="360.0"
-                    hbarPolicy="NEVER">
-            <content>
-                <VBox alignment="TOP_CENTER" spacing="10.0">
-                    <padding>
-                        <Insets top="15.0" right="15.0"
-                                bottom="15.0" left="15.0" />
-                    </padding>
-
+    <left>
+        <BorderPane styleClass="planning-panel"
+                    minWidth="310.0" prefWidth="326.0" maxWidth="326.0">
+            <top>
+                <VBox spacing="10.0">
                     <children>
-                        <Label text="Rutas aéreas"
-                               style="-fx-font-size: 24px;" />
-
-                        <Label fx:id="estadoCarga"
-                               text="Datos pendientes" />
-
-                        <Label text="Rueda sobre el mapa: zoom. Arrastrar: mover."
-                               wrapText="true"
-                               maxWidth="320.0" />
-
-                        <Button text="Restablecer vista"
-                                onAction="#restablecerMapa" />
-
-                        <Label text="Rojo discontinuo: conexión cancelada."
-                               style="-fx-text-fill: #C62828;"
-                               wrapText="true"
-                               maxWidth="320.0" />
-                        
-                        <Label text="Puntos: verde alcanzable, rojo inalcanzable, morado origen."
-                               wrapText="true"
-                               maxWidth="320.0" />
-
-                        <TextField fx:id="codigoAeropuerto"
-                                   promptText="Código del aeropuerto, por ejemplo SJO"
-                                   onAction="#consultarAeropuerto" />
-
-                        <Button text="Consultar aeropuerto"
-                                onAction="#consultarAeropuerto" />
-
-                        <TextField fx:id="origenRecorrido"
-                                   promptText="Código del aeropuerto de origen"
-                                   onAction="#consultarRecorrido" />
-
-                        <TextField fx:id="destinoRecorrido"
-                                   promptText="Código del aeropuerto de destino"
-                                   onAction="#consultarRecorrido" />
-
-                        <ComboBox fx:id="criterioRecorrido"
-                                  maxWidth="350.0" />
-
-                        <Button text="Buscar recorrido"
-                                onAction="#consultarRecorrido" />
-                        
-                        <Label fx:id="estadoVuelo"
-                               text="Sin vuelo activo."
-                               wrapText="true"
-                               minHeight="65.0"
-                               maxWidth="320.0" />
-
-                        <HBox alignment="CENTER" spacing="10.0">
+                        <VBox spacing="2.0" styleClass="brand-block">
                             <children>
-                                <Button text="Pausar / continuar"
-                                        onAction="#pausarOContinuarVuelo" />
+                                <Label text="Rutas aéreas" styleClass="brand-title" />
+                                <Label fx:id="estadoCarga" text="Datos pendientes"
+                                       styleClass="load-status" />
+                            </children>
+                        </VBox>
 
-                                <Button text="Reiniciar vuelo"
-                                        onAction="#reiniciarVuelo" />
+                        <HBox spacing="10.0">
+                            <children>
+                                <VBox spacing="5.0" HBox.hgrow="ALWAYS" minWidth="0.0">
+                                    <children>
+                                        <Label text="Origen" styleClass="field-label" />
+                                        <TextField fx:id="origenRecorrido"
+                                                   promptText="Ej. SJO"
+                                                   accessibleHelp="Código del aeropuerto de origen"
+                                                   onAction="#consultarRecorrido" />
+                                    </children>
+                                </VBox>
+                                <VBox spacing="5.0" HBox.hgrow="ALWAYS" minWidth="0.0">
+                                    <children>
+                                        <Label text="Destino" styleClass="field-label" />
+                                        <TextField fx:id="destinoRecorrido"
+                                                   promptText="Ej. MVD"
+                                                   accessibleHelp="Código del aeropuerto de destino"
+                                                   onAction="#consultarRecorrido" />
+                                    </children>
+                                </VBox>
                             </children>
                         </HBox>
 
-                        <Button text="Consultar destinos desde el origen"
-                                onAction="#consultarAlcanzables" />
-
-                        <Button text="Cancelar conexión directa"
-                                onAction="#cancelarRuta" />
-
-                        <Button text="Restaurar todas las rutas"
-                                onAction="#restaurarRutas" />
-
-                        <TextArea fx:id="resultadoConsulta"
-                                  editable="false"
-                                  wrapText="true"
-                                  minHeight="180.0"
-                                  prefRowCount="10" />
+                        <TabPane styleClass="mode-tabs" tabClosingPolicy="UNAVAILABLE"
+                                 tabMinWidth="65.0" tabMinHeight="26.0"
+                                 minHeight="160.0" prefHeight="160.0" maxHeight="160.0">
+                            <tabs>
+                                <Tab text="Viaje">
+                                    <content>
+                                        <VBox spacing="8.0" styleClass="mode-content">
+                                            <children>
+                                                <Label text="Criterio del recorrido" styleClass="field-label" />
+                                                <ComboBox fx:id="criterioRecorrido"
+                                                          accessibleHelp="Criterio del recorrido"
+                                                          maxWidth="Infinity" />
+                                                <Button text="Buscar recorrido"
+                                                        styleClass="button-primary"
+                                                        maxWidth="Infinity"
+                                                        onAction="#consultarRecorrido" />
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                                <Tab text="Aeropuerto">
+                                    <content>
+                                        <VBox spacing="8.0" styleClass="mode-content">
+                                            <children>
+                                                <Label text="Código a consultar" styleClass="field-label" />
+                                                <TextField fx:id="codigoAeropuerto"
+                                                           promptText="Ej. SJO"
+                                                           accessibleHelp="Código del aeropuerto a consultar"
+                                                           onAction="#consultarAeropuerto" />
+                                                <Button text="Consultar aeropuerto"
+                                                        maxWidth="Infinity"
+                                                        onAction="#consultarAeropuerto" />
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                                <Tab text="Red">
+                                    <content>
+                                        <VBox spacing="6.0" styleClass="mode-content">
+                                            <children>
+                                                <Button text="Consultar destinos desde el origen"
+                                                        maxWidth="Infinity"
+                                                        onAction="#consultarAlcanzables" />
+                                                <Button text="Cancelar conexión directa"
+                                                        styleClass="button-danger"
+                                                        maxWidth="Infinity"
+                                                        onAction="#cancelarRuta" />
+                                                <Button text="Restaurar todas las rutas"
+                                                        maxWidth="Infinity"
+                                                        onAction="#restaurarRutas" />
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                            </tabs>
+                        </TabPane>
                     </children>
                 </VBox>
-            </content>
-        </ScrollPane>
-    </right>
+            </top>
 
+            <center>
+                <VBox spacing="6.0" styleClass="result-card" minHeight="116.0">
+                    <BorderPane.margin>
+                        <Insets top="10.0" bottom="10.0" />
+                    </BorderPane.margin>
+                    <children>
+                        <Label text="RESULTADO" styleClass="section-title" />
+                        <TextArea fx:id="resultadoConsulta"
+                                  styleClass="result-output"
+                                  editable="false" wrapText="true"
+                                  promptText="El resultado de tu consulta aparecerá aquí."
+                                  minHeight="80.0" prefRowCount="6"
+                                  VBox.vgrow="ALWAYS" />
+                    </children>
+                </VBox>
+            </center>
+
+            <bottom>
+                <VBox spacing="6.0" styleClass="flight-card">
+                    <children>
+                        <Label text="ESTADO DEL VUELO" styleClass="section-title" />
+                        <Label fx:id="estadoVuelo" text="Sin vuelo activo."
+                               styleClass="flight-status"
+                               wrapText="true" minHeight="60.0"
+                               maxWidth="Infinity" />
+                        <HBox spacing="8.0">
+                            <children>
+                                <Button text="Pausar / continuar"
+                                        styleClass="button-compact"
+                                        minWidth="0.0" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                                        onAction="#pausarOContinuarVuelo" />
+                                <Button text="Reiniciar vuelo"
+                                        styleClass="button-compact"
+                                        minWidth="0.0" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                                        onAction="#reiniciarVuelo" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </bottom>
+        </BorderPane>
+    </left>
+
+    <center>
+        <BorderPane styleClass="map-panel" minWidth="0.0" minHeight="0.0">
+            <top>
+                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="map-toolbar">
+                    <children>
+                        <VBox spacing="2.0">
+                            <children>
+                                <Label text="Red de aeropuertos" styleClass="map-title" />
+                                <Label text="Rueda: zoom · Arrastrar: mover" styleClass="map-help" />
+                            </children>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button text="Restablecer vista"
+                                styleClass="button-compact"
+                                onAction="#restablecerMapa" />
+                    </children>
+                </HBox>
+            </top>
+            <center>
+                <Pane fx:id="contenedorMapa" minWidth="0.0" minHeight="0.0">
+                    <children>
+                        <Canvas fx:id="lienzoMapa" managed="false" />
+                    </children>
+                </Pane>
+            </center>
+            <bottom>
+                <FlowPane alignment="CENTER_LEFT" hgap="12.0" vgap="6.0" styleClass="map-legend">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="6.0">
+                            <children>
+                                <Line endX="22.0" styleClass="legend-route" />
+                                <Label text="Recorrido" styleClass="legend-label" />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="6.0">
+                            <children>
+                                <Line endX="22.0" styleClass="legend-cancelled" />
+                                <Label text="Cancelada" styleClass="legend-label" />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="6.0">
+                            <children>
+                                <Circle radius="3.5" fill="#1565C0" />
+                                <Label text="Aeropuerto" styleClass="legend-label" />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="6.0">
+                            <children>
+                                <Circle radius="3.5" fill="#2E7D32" />
+                                <Label text="Alcanzable" styleClass="legend-label" />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="6.0">
+                            <children>
+                                <Circle radius="3.5" fill="#C62828" />
+                                <Label text="Inalcanzable" styleClass="legend-label" />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="6.0">
+                            <children>
+                                <Circle radius="3.5" fill="#7B1FA2" />
+                                <Label text="Origen" styleClass="legend-label" />
+                            </children>
+                        </HBox>
+                    </children>
+                </FlowPane>
+            </bottom>
+        </BorderPane>
+    </center>
 </BorderPane>

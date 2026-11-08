@@ -1,9 +1,10 @@
 package estructurasdatos.rutasaereas.modelo;
 
-//Datos de un aeropuerto. Las conexiones se administran en el grafo.
+// Datos de un vértice. Sus conexiones se administran por separado en Grafo.
 public class Aeropuerto {
 
     private final String codigo;
+    // Coordenadas del archivo: X hacia la derecha, Y hacia abajo.
     private final int x;
     private final int y;
     private final String ciudad;
@@ -18,6 +19,7 @@ public class Aeropuerto {
         this.pais = pais;
     }
 
+    // Consultas de lectura; los datos del aeropuerto no cambian al dibujarlo.
     public String getCodigo() {
         return codigo;
     }

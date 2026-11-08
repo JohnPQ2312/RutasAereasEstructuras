@@ -8,11 +8,15 @@ import java.nio.file.Path;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+// Lee las cantidades y registros del formato de entrada, sin normalizar los códigos.
+// Los datos incompletos o inválidos se comunican mediante IOException.
 public class CargadorGrafo {
 
+    // Construye los vértices antes de que las rutas puedan referirse a ellos.
     public Grafo cargarAeropuertos(Path archivo) throws IOException {
         Grafo grafo = new Grafo();
 
+        // El recurso se cierra también si la lectura o una validación falla.
         try (Scanner lector = new Scanner(archivo, StandardCharsets.UTF_8)) {
             int cantidad = lector.nextInt();
 
@@ -34,6 +38,7 @@ public class CargadorGrafo {
                 grafo.agregarAeropuerto(aeropuerto);
             }
 
+            // No se ignoran datos que excedan la cantidad declarada.
             if (lector.hasNext()) {
                 throw new IOException(
                         "Hay datos adicionales a la cantidad declarada en "
@@ -41,6 +46,7 @@ public class CargadorGrafo {
             }
 
         } catch (NoSuchElementException | IllegalArgumentException exception) {
+            // Conserva la causa de un campo inválido o de una validación del grafo.
             throw new IOException(
                     "Datos invalidos o incompletos en " + archivo,
                     exception);
@@ -49,6 +55,7 @@ public class CargadorGrafo {
         return grafo;
     }
 
+    // El orden importa: agregar una ruta exige que sus dos aeropuertos ya existan.
     public Grafo cargar(Path archivoAeropuertos, Path archivoRutas)
             throws IOException {
 
@@ -58,6 +65,7 @@ public class CargadorGrafo {
         return grafo;
     }
 
+    // Grafo valida extremos y pesos al incorporar cada conexión dirigida.
     private void cargarRutas(Path archivo, Grafo grafo) throws IOException {
 
         try (Scanner lector = new Scanner(archivo, StandardCharsets.UTF_8)) {

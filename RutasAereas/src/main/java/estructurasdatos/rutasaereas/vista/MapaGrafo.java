@@ -16,27 +16,35 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+// Convierte los datos del grafo y del recorrido en capas de dibujo sobre un Canvas.
+// El zoom, el arrastre y la animación no cambian las coordenadas guardadas en Aeropuerto.
 public class MapaGrafo {
+
+    private static final Color COLOR_RECORRIDO = Color.web("#007C91");
+    private static final Color COLOR_CANCELADA = Color.web("#C62828");
 
     private final Canvas lienzo;
     private Grafo grafo;
     private ResultadoRecorrido recorridoSeleccionado;
     private Set<String> codigosResaltados = Set.of();
+    // Estado de la vista: la ampliación es un factor; los desplazamientos están en píxeles.
     private double ampliacion = 1;
     private double desplazamientoX;
     private double desplazamientoY;
     private double ultimoX;
     private double ultimoY;
-    private Set<String> alcanzablesMostrados;
+    private Set<String> alcanzablesMostrados; // null cuando no se está mostrando una consulta DFS.
     private String origenAlcanzabilidad;
     private boolean avionVisible;
+    // Posición en coordenadas del archivo, antes de aplicar la transformación de la vista.
     private double avionX;
     private double avionY;
-    private double anguloAvion;
+    private double anguloAvion; // Grados; cero apunta hacia la derecha.
 
     public MapaGrafo(Canvas lienzo) {
         this.lienzo = lienzo;
 
+        // Un cambio de tamaño vuelve a calcular la escala sin mover los datos del modelo.
         lienzo.widthProperty().addListener(
                 (observable, anterior, nuevo) -> dibujar());
 
@@ -55,6 +63,7 @@ public class MapaGrafo {
 
         lienzo.setOnMouseDragged(evento -> {
             if (evento.isPrimaryButtonDown()) {
+                // El arrastre desplaza la vista según lo recorrido desde el último evento.
                 desplazamientoX += evento.getX() - ultimoX;
                 desplazamientoY += evento.getY() - ultimoY;
                 ultimoX = evento.getX();
@@ -68,6 +77,7 @@ public class MapaGrafo {
                 -> lienzo.setCursor(Cursor.OPEN_HAND));
     }
 
+    // Al cambiar de red se descartan los resaltados y se recupera la vista inicial.
     public void setGrafo(Grafo grafo) {
         avionVisible = false;
         this.grafo = grafo;
@@ -78,6 +88,8 @@ public class MapaGrafo {
         restablecerVista();
     }
 
+    // null limpia el recorrido. El controlador detiene el animador por separado.
+    // Una consulta de viaje reemplaza los colores de alcanzabilidad anteriores.
     public void mostrarRecorrido(ResultadoRecorrido recorrido) {
         avionVisible = false;
         alcanzablesMostrados = null;
@@ -93,6 +105,7 @@ public class MapaGrafo {
         dibujar();
     }
 
+    // Alterna a los colores de DFS y conserva una copia del conjunto recibido.
     public void mostrarAlcanzables(String origen, Set<String> alcanzables) {
         avionVisible = false;
         origenAlcanzabilidad = origen;
@@ -104,6 +117,7 @@ public class MapaGrafo {
         dibujar();
     }
 
+    // Recibe coordenadas del mapa; dibujarAvion las convierte a píxeles del Canvas.
     public void mostrarAvion(double x, double y, double angulo) {
         avionX = x;
         avionY = y;
@@ -117,6 +131,7 @@ public class MapaGrafo {
         dibujar();
     }
 
+    // El origen de DFS tiene prioridad; después se aplican alcanzabilidad o recorrido.
     private Color obtenerColorAeropuerto(String codigo) {
         if (codigo.equals(origenAlcanzabilidad)) {
             return Color.web("#7B1FA2");
@@ -131,12 +146,13 @@ public class MapaGrafo {
         }
 
         if (codigosResaltados.contains(codigo)) {
-            return Color.web("#E65100");
+            return COLOR_RECORRIDO;
         }
 
         return Color.web("#1565C0");
     }
 
+    // Recupera la escala inicial y el centrado sin cambiar el recorrido ni la red.
     public void restablecerVista() {
         ampliacion = 1;
         desplazamientoX = 0;
@@ -157,7 +173,7 @@ public class MapaGrafo {
             desplazamientoX = 0;
             desplazamientoY = 0;
         } else {
-            // Conserva debajo del cursor el lugar que se esta ampliando.
+            // Conserva debajo del cursor el lugar que se está ampliando.
             double relacion = ampliacion / anterior;
             desplazamientoX = relacion * desplazamientoX
                     + (1 - relacion) * (evento.getX() - lienzo.getWidth() / 2);
@@ -174,6 +190,7 @@ public class MapaGrafo {
                 && y >= 0 && y <= lienzo.getHeight();
     }
 
+    // Redibuja el estado completo: conexiones, resaltados, puntos, etiquetas y avión.
     public void dibujar() {
         GraphicsContext dibujo = lienzo.getGraphicsContext2D();
 
@@ -186,11 +203,12 @@ public class MapaGrafo {
             return;
         }
 
-        // Las coordenadas del archivo usan una referencia de 1000 por 1000.
+        // La misma escala en X e Y conserva las proporciones de la referencia 1000 por 1000.
         double escala = Math.min(
                 (lienzo.getWidth() - 40) / 1000.0,
                 (lienzo.getHeight() - 40) / 1000.0) * ampliacion;
 
+        // Centra la referencia en el lienzo y después incorpora el desplazamiento del arrastre.
         double margenX = (lienzo.getWidth() - 1000 * escala) / 2
                 + desplazamientoX;
         double margenY = (lienzo.getHeight() - 1000 * escala) / 2
@@ -200,6 +218,7 @@ public class MapaGrafo {
         dibujo.setStroke(Color.rgb(100, 130, 150, 0.22));
         dibujo.setLineWidth(0.8);
 
+        // Las conexiones activas forman el fondo; los resaltados se superponen después.
         for (Aeropuerto origen : grafo.obtenerAeropuertos()) {
             double xOrigen = margenX + origen.getX() * escala;
             double yOrigen = margenY + origen.getY() * escala;
@@ -214,8 +233,9 @@ public class MapaGrafo {
             }
         }
 
-        dibujarCanceladas(dibujo, escala, margenX, margenY);
         dibujarRecorrido(dibujo, escala, margenX, margenY);
+        // El punteado permanece visible aunque se resalte la ruta inversa.
+        dibujarCanceladas(dibujo, escala, margenX, margenY);
 
         List<Rectangle2D> espaciosOcupados = new ArrayList<>();
 
@@ -230,7 +250,7 @@ public class MapaGrafo {
             dibujo.setFill(obtenerColorAeropuerto(aeropuerto.getCodigo()));
             dibujo.fillOval(x - 4, y - 4, 8, 8);
 
-            // Las etiquetas tambien deben dejar libres los puntos.
+            // Reserva todos los puntos antes de ubicar las etiquetas para que puedan evitarlos.
             espaciosOcupados.add(new Rectangle2D(x - 6, y - 6, 12, 12));
         }
 
@@ -246,6 +266,7 @@ public class MapaGrafo {
                     dibujo, aeropuerto.getCodigo(), x, y, espaciosOcupados);
         }
 
+        // El avión queda por encima de las demás capas.
         dibujarAvion(dibujo, escala, margenX, margenY);
     }
 
@@ -260,11 +281,12 @@ public class MapaGrafo {
         double x = margenX + avionX * escala;
         double y = margenY + avionY * escala;
 
+        // La transformación es local al avión; restore recupera el sistema de coordenadas anterior.
         dibujo.save();
         dibujo.translate(x, y);
         dibujo.rotate(anguloAvion);
 
-        // Figura de avion de papel orientada inicialmente hacia la derecha.
+        // Figura de avión de papel orientada inicialmente hacia la derecha.
         double[] puntosX = {12, -8, -3, -8};
         double[] puntosY = {0, -8, 0, 8};
 
@@ -287,8 +309,8 @@ public class MapaGrafo {
             return;
         }
 
-        dibujo.setStroke(Color.web("#E65100"));
-        dibujo.setLineWidth(3);
+        dibujo.setStroke(COLOR_RECORRIDO);
+        dibujo.setLineWidth(4);
 
         List<String> codigos = recorridoSeleccionado.getCodigos();
 
@@ -304,9 +326,10 @@ public class MapaGrafo {
             GraphicsContext dibujo,
             double escala, double margenX, double margenY) {
 
+        // El punteado y su grosor no deben propagarse al resto del dibujo.
         dibujo.save();
-        dibujo.setStroke(Color.web("#C62828"));
-        dibujo.setLineWidth(2);
+        dibujo.setStroke(COLOR_CANCELADA);
+        dibujo.setLineWidth(2.5);
         dibujo.setLineDashes(6, 4);
 
         for (Aeropuerto origen : grafo.obtenerAeropuertos()) {
@@ -319,6 +342,7 @@ public class MapaGrafo {
         dibujo.restore();
     }
 
+    // Recorrido y cancelación comparten extremos y posición de flecha.
     private void dibujarTramo(
             GraphicsContext dibujo, Aeropuerto origen, Aeropuerto destino,
             double escala, double margenX, double margenY) {
@@ -328,6 +352,7 @@ public class MapaGrafo {
         double xDestino = margenX + destino.getX() * escala;
         double yDestino = margenY + destino.getY() * escala;
 
+        // Los extremos coincidentes se representan con un círculo.
         if (xOrigen == xDestino && yOrigen == yDestino) {
             dibujo.strokeOval(xOrigen - 10, yOrigen - 20, 20, 20);
             return;
@@ -335,6 +360,7 @@ public class MapaGrafo {
 
         dibujo.save();
         dibujo.strokeLine(xOrigen, yOrigen, xDestino, yDestino);
+        // La flecha permanece continua aunque el tramo sea discontinuo.
         dibujo.setLineDashes();
         dibujarFlecha(dibujo, xOrigen, yOrigen, xDestino, yDestino);
         dibujo.restore();
@@ -347,6 +373,7 @@ public class MapaGrafo {
 
         double angulo = Math.atan2(
                 yDestino - yOrigen, xDestino - xOrigen);
+        // La punta indica el sentido antes de llegar al extremo del destino.
         double xFlecha = xOrigen + (xDestino - xOrigen) * 0.7;
         double yFlecha = yOrigen + (yDestino - yOrigen) * 0.7;
 
@@ -364,6 +391,7 @@ public class MapaGrafo {
                 yFlecha - longitud * Math.sin(angulo + apertura));
     }
 
+    // Busca espacio para el código respetando los puntos y las etiquetas ya colocadas.
     private void dibujarEtiqueta(
             GraphicsContext dibujo, String codigo,
             double x, double y, List<Rectangle2D> espaciosOcupados) {
@@ -412,7 +440,7 @@ public class MapaGrafo {
             }
         }
 
-        // Posicion de respaldo cuando el espacio disponible es insuficiente.
+        // Si ninguna candidata queda libre, conserva una posición dentro del lienzo.
         if (area == null) {
             double izquierda = Math.max(
                     2, Math.min(x + 8, lienzo.getWidth() - ancho - 2));

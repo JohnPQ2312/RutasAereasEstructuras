@@ -15,10 +15,13 @@ import java.util.Set;
 import java.util.PriorityQueue;
 import java.util.Deque;
 
+// Resuelve consultas sobre las conexiones activas; no dibuja ni modifica el grafo.
 public class BuscadorRutas {
 
     private final Grafo grafo;
 
+    // Conserva el costo que tenía una propuesta al entrar en la cola.
+    // Una mejora posterior se guarda en otra entrada, sin cambiar esta.
     private static class EntradaPrioridad implements Comparable<EntradaPrioridad> {
 
         private final String codigo;
@@ -31,6 +34,7 @@ public class BuscadorRutas {
 
         @Override
         public int compareTo(EntradaPrioridad otra) {
+            // La prioridad depende del peso acumulado, no del orden de llegada.
             return Long.compare(this.valorAcumulado, otra.valorAcumulado);
         }
     }
@@ -39,6 +43,8 @@ public class BuscadorRutas {
         this.grafo = grafo;
     }
 
+    // BFS explora por cantidad de vuelos, sin comparar minutos ni dólares.
+    // Devuelve null si los dos códigos existen pero no hay camino entre ellos.
     public ResultadoRecorrido buscarMenosVuelos(String origen, String destino) {
         if (grafo.buscarAeropuerto(origen) == null
                 || grafo.buscarAeropuerto(destino) == null) {
@@ -48,6 +54,7 @@ public class BuscadorRutas {
 
         Queue<String> pendientes = new ArrayDeque<>();
         Set<String> descubiertos = new HashSet<>();
+        // El predecesor permite retroceder; la ruta exacta conserva sus dos pesos.
         Map<String, String> predecesores = new HashMap<>();
         Map<String, Ruta> rutasLlegada = new HashMap<>();
 
@@ -74,10 +81,12 @@ public class BuscadorRutas {
             }
         }
 
-        // La cola se agoto sin alcanzar el destino.
+        // La cola se agotó sin alcanzar el destino.
         return null;
     }
 
+    // Dijkstra minimiza el peso elegido; Grafo rechaza conexiones de peso negativo.
+    // Como BFS, devuelve null cuando el destino no es alcanzable.
     public ResultadoRecorrido buscarMenorPeso(
             String origen, String destino, CriterioPeso criterio) {
 
@@ -93,6 +102,7 @@ public class BuscadorRutas {
         }
 
         PriorityQueue<EntradaPrioridad> pendientes = new PriorityQueue<>();
+        // Este mapa guarda el costo vigente; la cola puede conservar propuestas antiguas.
         Map<String, Long> mejoresValores = new HashMap<>();
         Map<String, String> predecesores = new HashMap<>();
         Map<String, Ruta> rutasLlegada = new HashMap<>();
@@ -104,11 +114,12 @@ public class BuscadorRutas {
             EntradaPrioridad entrada = pendientes.remove();
             String actual = entrada.codigo;
 
-            // Una mejora posterior puede haber dejado esta entrada desactualizada.
+            // Cada mejora añade otra entrada. Se descarta la antigua si ya no es la mejor.
             if (entrada.valorAcumulado != mejoresValores.get(actual)) {
                 continue;
             }
 
+            // Al extraer la menor propuesta vigente, su costo es definitivo con pesos no negativos.
             if (actual.equals(destino)) {
                 return reconstruirRecorrido(
                         origen, destino, predecesores, rutasLlegada);
@@ -123,6 +134,7 @@ public class BuscadorRutas {
                 long mejorConocido = mejoresValores.getOrDefault(
                         vecino, Long.MAX_VALUE);
 
+                // Un empate conserva el camino conocido; solo una mejora lo reemplaza.
                 if (nuevoValor < mejorConocido) {
                     mejoresValores.put(vecino, nuevoValor);
                     predecesores.put(vecino, actual);
@@ -137,6 +149,7 @@ public class BuscadorRutas {
         return null;
     }
 
+    // DFS utiliza una pila y devuelve un conjunto sin orden de visita que incluye al origen.
     public Set<String> buscarAlcanzables(String origen) {
         if (grafo.buscarAeropuerto(origen) == null) {
             throw new IllegalArgumentException(
@@ -151,7 +164,7 @@ public class BuscadorRutas {
         while (!pendientes.isEmpty()) {
             String actual = pendientes.pop();
 
-            // Distintas conexiones pueden dejar pendiente el mismo aeropuerto.
+            // Se marca al extraer. Si el aeropuerto se repite en la pila, no vuelve a expandirse.
             if (!visitados.add(actual)) {
                 continue;
             }
@@ -168,6 +181,7 @@ public class BuscadorRutas {
         return Set.copyOf(visitados);
     }
 
+    // Recupera las conexiones elegidas, sin buscar de nuevo una ruta entre cada par de códigos.
     private ResultadoRecorrido reconstruirRecorrido(
             String origen, String destino,
             Map<String, String> predecesores,
@@ -182,7 +196,7 @@ public class BuscadorRutas {
             actual = predecesores.get(actual);
         }
 
-        // Las conexiones se recuperaron desde la ultima hasta la primera.
+        // Las conexiones se recuperaron desde la última hasta la primera.
         Collections.reverse(tramos);
 
         return new ResultadoRecorrido(origen, tramos);

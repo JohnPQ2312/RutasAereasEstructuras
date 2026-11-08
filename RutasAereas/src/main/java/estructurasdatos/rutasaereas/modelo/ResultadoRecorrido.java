@@ -3,15 +3,17 @@ package estructurasdatos.rutasaereas.modelo;
 import java.util.ArrayList;
 import java.util.List;
 
+// Itinerario ya resuelto: la interfaz y el animador utilizan los mismos tramos.
 public class ResultadoRecorrido {
 
     private final List<String> codigos;
     private final List<Ruta> tramos;
+    // Se acumulan en long los pesos int de los vuelos del itinerario.
     private final long minutosTotales;
     private final long costoTotal;
 
     public ResultadoRecorrido(String origen, List<Ruta> tramos) {
-        // Conserva las conexiones elegidas sin permitir cambios en la lista.
+        // Conserva referencias a Ruta; la lista no permite añadir, quitar ni reemplazar tramos.
         this.tramos = List.copyOf(tramos);
 
         List<String> recorrido = new ArrayList<>();
@@ -20,7 +22,7 @@ public class ResultadoRecorrido {
         long minutos = 0;
         long costo = 0;
 
-        // Cada conexion agrega un destino y sus dos pesos al resultado.
+        // Cada conexión agrega un destino y sus dos pesos al resultado.
         for (Ruta tramo : this.tramos) {
             recorrido.add(tramo.getDestino());
             minutos += tramo.getMinutos();

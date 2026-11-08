@@ -1,0 +1,243 @@
+.app-root {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-background-color: #F3F6FA;
+    -fx-text-fill: #172B4D;
+}
+
+.label {
+    -fx-text-fill: #172B4D;
+}
+
+.planning-panel {
+    -fx-padding: 14px;
+}
+
+.brand-block {
+    -fx-background-color: #172B4D;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px 12px;
+}
+
+.brand-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.load-status {
+    -fx-font-size: 12px;
+    -fx-text-fill: #D7E2EC;
+}
+
+.field-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #536778;
+}
+
+.text-field,
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #D7E2EC;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-pref-height: 30px;
+}
+
+.text-field {
+    -fx-padding: 5px 8px;
+    -fx-prompt-text-fill: #7A8A9C;
+}
+
+.text-field:focused,
+.combo-box:focused {
+    -fx-border-color: #007C91;
+}
+
+.button {
+    -fx-background-color: white;
+    -fx-text-fill: #172B4D;
+    -fx-border-color: #D7E2EC;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 5px 10px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #EAF1F6;
+}
+
+.button:pressed {
+    -fx-background-color: #D7E2EC;
+}
+
+.button:focused {
+    -fx-border-color: #007C91;
+}
+
+.button-primary {
+    -fx-background-color: #007C91;
+    -fx-border-color: #007C91;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 6px 10px;
+}
+
+.button-primary:hover {
+    -fx-background-color: #00697B;
+}
+
+.button-primary:pressed {
+    -fx-background-color: #005568;
+}
+
+.button-primary:focused {
+    -fx-border-color: #172B4D;
+}
+
+.button-danger {
+    -fx-text-fill: #C62828;
+    -fx-border-color: #E3B6BA;
+}
+
+.button-danger:hover {
+    -fx-background-color: #FCEDEE;
+}
+
+.button-danger:pressed {
+    -fx-background-color: #F6D7DA;
+}
+
+.button-compact {
+    -fx-font-size: 12px;
+    -fx-padding: 6px 8px;
+}
+
+.button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+.mode-tabs {
+    -fx-background-color: white;
+    -fx-border-color: #D7E2EC;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.mode-tabs > .tab-header-area {
+    -fx-padding: 3px 4px 0px 4px;
+}
+
+.mode-tabs > .tab-header-area > .tab-header-background {
+    -fx-background-color: #EAF1F6;
+    -fx-background-radius: 8px 8px 0px 0px;
+}
+
+.mode-tabs .tab {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6px 6px 0px 0px;
+    -fx-padding: 4px 8px;
+}
+
+.mode-tabs .tab .tab-label {
+    -fx-text-fill: #536778;
+    -fx-font-size: 12px;
+}
+
+.mode-tabs .tab:selected {
+    -fx-background-color: white;
+}
+
+.mode-tabs .tab:selected .tab-label {
+    -fx-text-fill: #007C91;
+    -fx-font-weight: bold;
+}
+
+.mode-tabs .tab .focus-indicator {
+    -fx-border-color: transparent;
+}
+
+.mode-tabs .tab:focused .focus-indicator {
+    -fx-border-color: #007C91;
+}
+
+.mode-content {
+    -fx-padding: 10px;
+}
+
+.result-card,
+.flight-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-border-color: #D7E2EC;
+    -fx-border-radius: 10px;
+    -fx-padding: 10px;
+}
+
+.section-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #536778;
+}
+
+.result-output {
+    -fx-font-size: 12px;
+    -fx-text-fill: #172B4D;
+    -fx-prompt-text-fill: #7A8A9C;
+    -fx-background-color: white;
+    -fx-background-insets: 0px;
+    -fx-border-color: transparent;
+    -fx-padding: 0px;
+}
+
+.result-output .content {
+    -fx-background-color: white;
+    -fx-padding: 2px;
+}
+
+.result-output:focused {
+    -fx-border-color: #007C91;
+    -fx-border-radius: 4px;
+}
+
+.flight-status {
+    -fx-font-size: 12px;
+    -fx-text-fill: #172B4D;
+}
+
+.map-panel {
+    -fx-padding: 14px 14px 14px 0px;
+}
+
+.map-toolbar {
+    -fx-padding: 0px 0px 10px 0px;
+}
+
+.map-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.map-help,
+.legend-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #536778;
+}
+
+.map-legend {
+    -fx-padding: 10px 0px 0px 0px;
+}
+
+.legend-route {
+    -fx-stroke: #007C91;
+    -fx-stroke-width: 4px;
+}
+
+.legend-cancelled {
+    -fx-stroke: #C62828;
+    -fx-stroke-width: 2.5px;
+    -fx-stroke-dash-array: 6px 4px;
+}
